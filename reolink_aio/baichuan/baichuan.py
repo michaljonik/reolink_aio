@@ -2954,8 +2954,9 @@ class Baichuan:
         # height = int.from_bytes(stream_header[12:16], byteorder="little")
         # frame_rate = stream_header[17]
         # start_year = 1900 + stream_header[18]
-        if magic != b"1001":
-            raise UnexpectedDataError(f"Baichuan host {self._host}: snapshot_past payload did not start with stream header magic b'1001' but with {magic!r}")
+        # InfoV1 (b"1001") and InfoV2 (b"1002") share the same 32-byte header layout
+        if magic not in {b"1001", b"1002"}:
+            raise UnexpectedDataError(f"Baichuan host {self._host}: snapshot_past payload did not start with stream header magic b'1001' or b'1002' but with {magic!r}")
 
         # search magic
         try:
